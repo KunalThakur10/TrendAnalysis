@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
+import plotly.express as px
+from dash import Dash, dcc, html
 
 np.random.seed(42)
 dates = pd.date_range("2023-01-01", periods=200)
@@ -9,12 +10,15 @@ categories = np.random.choice(["A", "B", "C"], size=200)
 df = pd.DataFrame({"Date": dates, "Value": values, "Category": categories})
 
 pivot = df.pivot_table(index="Date", columns="Category", values="Value", aggfunc="mean")
-pivot = pivot.interpolate().rolling(7).mean()
+pivot = pivot.interpolate().rolling(7).mean().reset_index()
 
-plt.figure(figsize=(10,6))
-for col in pivot.columns:
-    plt.plot(pivot.index, pivot[col], label=col, linewidth=2)
-plt.title("Trend Analysis", fontsize=18)
-plt.legend()
-plt.tight_layout()
-plt.show()
+fig = px.line(pivot, x="Date", y=pivot.columns[1:], title="Trend Analysis", template="plotly_dark")
+
+app = Dash(__name__)
+app.layout = html.Div([
+    html.H1("Trend Analysis Dashboard"),
+    dcc.Graph(figure=fig)
+])
+
+if __name__ == "__main__":
+    app.run_server(debug=True)
