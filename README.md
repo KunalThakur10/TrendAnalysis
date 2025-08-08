@@ -10,5 +10,5 @@ A minimal yet elegant Python script that generates synthetic time series data, p
 ## Installation
 ```bash
 git clone https://github.com/KunalThakur10/TrendAnalysis.git
-cd cool-data-science-flex
+cd TrendAnalysis
 pip install -r requirements.txt
